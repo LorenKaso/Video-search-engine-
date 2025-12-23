@@ -1,0 +1,15 @@
+# Data files
+data/
+outputs/
+__pycache__/
+
+# Videos
+*.mp4
+*.m4a
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment
+.env

@@ -1,2 +1,5 @@
 yt-dlp
 python-dotenv
+
+pyscenedetect
+opencv-python

@@ -4,9 +4,12 @@ from src.pipeline.download import download_youtube_search
 from src.pipeline.scenes import detect_and_save_scenes
 from src.pipeline.captions import caption_scenes
 from rapidfuzz import fuzz
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
 import re
 import json
 
+_WORD_RE = re.compile(r"[a-z0-9]+")
 
 def main() -> None:
     # Step 1: download (skip if exists)
@@ -53,9 +56,11 @@ def main() -> None:
 
     # Step 4: Search the video using a word (EXACT 'in' then FUZZY RapidFuzz)
     captions = json.loads(CAPTIONS_JSON.read_text(encoding="utf-8"))
-
-    _WORD_RE = re.compile(r"[a-z0-9]+")
-
+    
+    all_text = " ".join(captions.values()).lower()
+    vocab = sorted(set(_WORD_RE.findall(all_text)))
+    completer = WordCompleter(vocab, ignore_case=True)
+    
     def best_token_score(query: str, caption: str) -> float:
         """
         Compute best fuzzy score between query and ANY token in caption.
@@ -77,7 +82,7 @@ def main() -> None:
 
     print("Search the video using a word:")
     while True:
-        word = input().strip()
+        word = prompt("", completer=completer).strip()
         if not word:
             break
 
@@ -111,7 +116,7 @@ def main() -> None:
         for score, scene_file in scored[:10]:
             print(f"- {scene_file} (score={score:.1f})")
 
-        threshold = 85
+        threshold = 88
         top_k = 12
         matches = [scene_file for score, scene_file in scored if score >= threshold][:top_k]
 

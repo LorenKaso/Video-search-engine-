@@ -1,8 +1,8 @@
 from __future__ import annotations
-from src.config import SCENES_DIR, VIDEO_PATH, YOUTUBE_QUERY
+from src.config import SCENES_DIR, VIDEO_PATH, YOUTUBE_QUERY, CAPTIONS_JSON
 from src.pipeline.download import download_youtube_search
 from src.pipeline.scenes import detect_and_save_scenes
-
+from src.pipeline.captions import caption_scenes
 
 def main() -> None:
     # Step 1: download (skip if exists)
@@ -31,6 +31,13 @@ def main() -> None:
     else:
         print(f"Step 2: Scenes already exist: {len(existing)}")
 
+    # Step 3: Caption each scene image using Moondream
+    if CAPTIONS_JSON.exists():
+        print(f"Step 3: Captions JSON already exists. Skipping: {CAPTIONS_JSON}")
+    else:
+        print("Step 3: Generating captions with Moondream...")
+        caption_scenes(SCENES_DIR, CAPTIONS_JSON)
+        print(f"Saved captions to: {CAPTIONS_JSON}")
 
 if __name__ == "__main__":
     main()

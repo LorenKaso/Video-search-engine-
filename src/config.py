@@ -11,3 +11,5 @@ OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 
 YOUTUBE_QUERY = "super mario movie trailer"
 VIDEO_PATH = RAW_DIR / "video.mp4"
+
+CAPTIONS_JSON = INDEX_DIR / "scene_captions.json"

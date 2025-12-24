@@ -10,12 +10,22 @@ import re
 import json
 from pathlib import Path
 from src.utils.collage import build_collage, show_image
+from src.search.video_gemini import run_video_mode
 
 
 _WORD_RE = re.compile(r"[a-z0-9]+")
 
 
 def main() -> None:
+    print("Choose search mode:")
+    print("1) Image model (captions search)")
+    print("2) Video model (Gemini)")
+    mode = input("Enter 1 or 2: ").strip()
+
+    if mode == "2":
+        run_video_mode(VIDEO_PATH)
+        return
+
     # Step 1: download (skip if exists)
     if not VIDEO_PATH.exists():
         print("Step 1: Downloading video from YouTube...")

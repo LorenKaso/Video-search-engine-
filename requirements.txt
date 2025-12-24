@@ -5,3 +5,5 @@ pyscenedetect
 opencv-python
 
 Pillow
+google-genai
+opencv-python

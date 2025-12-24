@@ -8,8 +8,12 @@ from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 import re
 import json
+from pathlib import Path
+from src.utils.collage import build_collage, show_image
+
 
 _WORD_RE = re.compile(r"[a-z0-9]+")
+
 
 def main() -> None:
     # Step 1: download (skip if exists)
@@ -73,7 +77,6 @@ def main() -> None:
             return 0.0
 
         qlen = len(q)
-        # keep tokens with length close to query (±2 chars) to reduce false positives
         cand = [t for t in tokens if abs(len(t) - qlen) <= 2]
         if not cand:
             cand = tokens
@@ -99,6 +102,15 @@ def main() -> None:
             print(f"EXACT ('in') -> Found {len(exact_matches)} matching scenes.")
             for s in exact_matches[:10]:
                 print(f"- {s}")
+
+            # collage for EXACT
+            result_scenes = exact_matches
+            image_paths = [SCENES_DIR / s for s in result_scenes]
+            out_path = CAPTIONS_JSON.parent / "collage.png"
+            build_collage(image_paths, out_path)
+            print(f"Saved collage to: {out_path.resolve()}")
+            show_image(out_path)
+
             continue
 
         # 2) FUZZY fallback using RapidFuzz (token-based)
@@ -124,6 +136,16 @@ def main() -> None:
         for s in matches:
             print(f"- {s}: {captions[s]}")
 
+        # collage for FUZZY (only if we have matches)
+        if matches:
+            result_scenes = matches
+            image_paths = [SCENES_DIR / s for s in result_scenes]
+            out_path = CAPTIONS_JSON.parent / "collage.png"
+            build_collage(image_paths, out_path)
+            print(f"Saved collage to: {out_path.resolve()}")
+            show_image(out_path)
+        else:
+            print("No fuzzy matches found above threshold.")
 
 if __name__ == "__main__":
     main()

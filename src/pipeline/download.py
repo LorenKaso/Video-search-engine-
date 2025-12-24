@@ -1,8 +1,6 @@
 from __future__ import annotations
-
 from pathlib import Path
 from typing import Optional
-
 from yt_dlp import YoutubeDL
 
 

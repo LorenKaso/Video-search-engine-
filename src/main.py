@@ -47,5 +47,26 @@ def main() -> None:
         print(f"Step 3: Generating captions with Moondream... ({len(existing_captions)}/{total_images} already exist)")
         caption_scenes(SCENES_DIR, CAPTIONS_JSON)
         print(f"Saved captions to: {CAPTIONS_JSON}")
+
+    # Step 4: Search using 'in'
+    captions = json.loads(CAPTIONS_JSON.read_text(encoding="utf-8"))
+
+    print("Search the video using a word:")
+    while True:
+        word = input().strip()
+        if not word:
+            break
+
+        word_l = word.lower()
+        matches = [
+            scene_file
+            for scene_file, caption in captions.items()
+            if word_l in caption.lower()
+        ]
+
+        print(f"Found {len(matches)} matching scenes.")
+        for s in matches[:10]:
+            print(f"- {s}")
+
 if __name__ == "__main__":
     main()
